@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.usts.dao.IUserDao">
+
+    <!-- 通常都不知道ID -->
+    <select id="selectUser" resultType="Users" parameterType="int">
+        SELECT * FROM users
+        WHERE userid = #{userid}
+    </select>
+
+    <select id="listUser" resultType="Users">
+        SELECT * FROM users
+    </select>
+
+    <!-- 当用户名和密码一致时 -->
+    <select id="selectUserByInfo" resultType="Users" parameterType="Users">
+         SELECT * FROM users WHERE username = #{username} and userpw = #{userpw}
+    </select>
+
+    <!--<insert id="addUsers" parameterType="String">-->
+    <!--insert into users values(#{name},#{passwd},#{userType},"","")-->
+    <!--</insert>-->
+
+    <insert id="addUsers" parameterType="Users">
+        INSERT INTO users(username,userpw,fydw,fyzw,dq,wsw,dn,other)
+        values (#{username},#{userpw},#{fydw},#{fyzw},#{dq},#{wsw},#{dn},#{other})
+    </insert>
+
+    <delete id="deleteUsers" parameterType="Users">
+        DELETE from users where userid = #{userid}
+    </delete>
+
+    <update id="updataUserPasswd" parameterType="Users">
+        update users
+        <set>
+        <if test="fydw != -1">
+            fydw = #{fydw},
+        </if>
+        <if test="fyzw != -1">
+            fyzw = #{fyzw},
+        </if>
+        <if test="dq != -1">
+            dq = #{dq},
+        </if>
+        <if test="wsw != -1">
+            wsw = #{wsw},
+        </if>
+        <if test="dn != -1">
+            dn = #{dn},
+        </if>
+        <if test="other != -1">
+            other = #{other},
+        </if>
+        <if test="userpw != null">
+          userpw = #{userpw},
+        </if>
+        <if test="phone != null">
+            phone = #{phone},
+        </if>
+        <if test="username != null">
+            username = #{username}
+        </if>
+        </set>
+        WHERE userid = #{userid}
+    </update>
+</mapper>

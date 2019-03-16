@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IFoodsDao接口方法提供sql语句配置 -->
+<mapper namespace="com.usts.dao.DataDao">
+
+    <select id="selectData" resultType="DataObject" parameterType="int">
+        SELECT * FROM fyzw WHERE id = #{id}
+    </select>
+
+    <select id="selectDataBySingle" parameterType="String" resultType="DataObject">
+        SELECT * FROM fyzw
+        where
+          lb = #{sx} or
+            cydw = #{sx} or
+             riqi = #{sx} or
+              sxkey = #{sx} or
+                sxvalue = #{sx} and
+                 status = #{status}
+    </select>
+
+    <select id="selectDataByObject" parameterType="DataObject" resultType="DataObject">
+        SELECT * FROM fyzw
+        where status = #{status}
+          <if test="cydw != null">
+              and cydw = #{cydw}
+          </if>
+          <if test="riqi != null">
+              and riqi = #{riqi}
+          </if>
+          <if test="sxkey != null">
+              and sxkey = #{sxkey}
+          </if>
+          <if test="lb != null">
+              and lb = #{lb}
+          </if>
+
+    </select>
+
+    <select id="selectDataByLb" parameterType="Integer" resultType="DataObject">
+        SELECT * FROM fyzw
+        where lb like #{lb}
+    </select>
+
+    <select id="selectRiQi" parameterType="String" resultType="String">
+        SELECT distinct riqi FROM fyzw
+        where riqi like #{riqi}
+    </select>
+
+    <select id="selectDatafuzzy" parameterType="String" resultType="LBObject">
+        SELECT * FROM lb
+        where sxkey like #{sxkey}
+    </select>
+
+    <update id="updataData" parameterType="DataObject">
+        UPDATE fyzw SET
+          sxvalue = #{sxvalue}
+        WHERE cyd_bh = #{cyd_bh} and
+                cydw = #{cydw} and sxkey = #{sxkey} and lb = #{lb}
+    </update>
+
+    <insert id="addData" parameterType="DataObject">
+        insert into fyzw(cyd_bh,cydw,riqi,sxkey,sxvalue,lb,status)
+         values(#{cyd_bh},#{cydw},#{riqi},#{sxkey},#{sxvalue},#{lb},#{status});
+    </insert>
+
+    <insert id ="addDataBench" parameterType="java.util.ArrayList" >
+        insert into fyzw(cyd_bh,cydw,riqi,sxkey,sxvalue,lb,status)
+        values<foreach collection ="list" item="item" index= "index" separator =",">
+              (#{item.cyd_bh},#{item.cydw},#{item.riqi},#{item.sxkey},#{item.sxvalue},#{item.lb},#{item.status})
+              </foreach >
+    </insert >
+
+
+    <update id="delData">
+        UPDATE fyzw SET
+          status = 0
+        WHERE cyd_bh = #{arg0} and riqi = #{arg1} and sxkey = #{arg2}
+    </update>
+</mapper>
